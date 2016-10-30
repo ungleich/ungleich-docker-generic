@@ -1,0 +1,3 @@
+The main script is **docker_env_autoconfig.sh** and you can specify there all parameters used by the whole enviroment. By default all parameters are empty for you to fill them. Some of them are required and others are optional (taking a default hardcoded value).
+
+The second script **kea_config_builder.sh** is used by the first one to create kea.conf file. By default, it will be placed on the same path where the scripts are, but you can call `docker_env_autoconfig.sh /some/path/` to change destination
