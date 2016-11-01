@@ -161,7 +161,7 @@ docker run --name "${KEA_CONTAINER_NAME:-kea}" \
 docker run --name "${CDIST_TRIGGER_CONTAINER_NAME:-trigger}" \
 			--network="${DOCKER_NETWORK_NAME:-ethz-scientific}" \
 			--network-alias="$CDIST_TRIGGER_HOSTNAME" \
-			--expose "${CDIST_TRIGGER_PORT:-3000}"
+			--expose "${CDIST_TRIGGER_PORT:-3000}" \
 			-d ungleich/ungleich-cdist-trigger \
 			--http-port "${CDIST_TRIGGER_PORT:-3000}"
 
