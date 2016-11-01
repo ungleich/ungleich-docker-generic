@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -45,6 +45,17 @@ export POSTGRES_USER=""
 export POSTGRES_PASSWORD=""
 
 #
+# nginx parameters
+#
+
+# Optional. Default value "nginx"
+NGINX_CONTAINER_NAME="" 
+
+# Required
+NGINX_HOSTNAME=""
+NGINX_LOCAL_FILES_PATH=""
+
+#
 # TFTP server parameters
 #
 
@@ -54,6 +65,19 @@ TFTP_CONTAINER_NAME=""
 # Required
 export TFTP_SERVER_IP="" # NOTE: This should be part of DOCKER_NETWORK_IP_RANGE
 export TFTP_SERVER_HOSTNAME=""
+
+# Regarding TFTP server, you might serve the iPXE built by the container or 
+# choose your own files. Your own files have preference, so if you use this
+# option, the built-in iPXE image will be ignored.
+
+# Any local path on the host
+TFTP_LOCAL_FILES_PATH=""
+
+if [ -n "$TFTP_LOCAL_FILES_PATH" ]; then
+	TFTP_FILES="-v ${TFTP_LOCAL_FILES_PATH}:/var/lib/tftpboot:ro"
+else
+	TFTP_FILES="-e HTTP_SERVER=${NGINX_HOSTNAME}"
+fi
 
 #
 # cdist trigger parameters
@@ -67,19 +91,8 @@ CDIST_TRIGGER_TRIGGER_PORT=""
 # Required
 CDIST_TRIGGER_HOSTNAME=""
 
-#
-# nginx parameters
-#
-
-# Optional. Default value "nginx"
-NGINX_CONTAINER_NAME="" 
-
-# Required
-NGINX_HOSTNAME=""
-NGINX_LOCAL_FILES_PATH=""
-
 #########################################
-# Emd of parameters declaration section
+# End of parameters declaration section
 #########################################
 
 #
@@ -100,6 +113,7 @@ docker pull ungleich/ungleich-kea
 docker pull ungleich/ungleich-postgres-kea
 docker pull ungleich/ungleich-tftp
 docker pull ungleich/ungleich-cdist-trigger
+docker pull nginx:stable
 
 #
 # User defined network creation
@@ -122,7 +136,7 @@ docker run --name "${TFTP_CONTAINER_NAME:-tftp}" \
 			--network="${DOCKER_NETWORK_NAME:-ethz-scientific}" \
 			--network-alias "$TFTP_SERVER_HOSTNAME" \
 			--ip "$TFTP_SERVER_IP" \
-			-v /tmp/tftp:/var/lib/tftpboot:ro \
+			"$TFTP_FILES" \
 			-d ungleich/ungleich-tftp
 
 # Creating Postgres container
@@ -156,4 +170,4 @@ docker run --name "${NGINX_CONTAINER_NAME:-nginx}" \
 			--network="${DOCKER_NETWORK_NAME:-ethz-scientific}" \
 			--network-alias="$NGINX_HOSTNAME" \
 			-v "$NGINX_LOCAL_FILES_PATH":/usr/share/nginx/html:ro \
-			-d nginx:stable 
+			-d nginx:stable
