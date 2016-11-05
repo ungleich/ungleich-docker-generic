@@ -48,7 +48,8 @@ cat > "${DESTINATION_DIR}/kea.conf" << EOF
 
   "subnet4": [
   {    "subnet": "$DOCKER_NETWORK_SUBNET",
-       "pools": [ { "pool": "$KEA_POOL_SUBNET" } ] }
+       "pools": [ { "pool": "$KEA_POOL_SUBNET" } ] },
+       "id": 1
   ]
 },
 

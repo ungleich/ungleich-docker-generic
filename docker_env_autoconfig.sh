@@ -1,4 +1,6 @@
 #!/bin/bash
+# Carlos Ortigoza Dempster (carlos.ortigoza -at- ungleich.ch)
+# 2016-11-02
 
 set -e
 
